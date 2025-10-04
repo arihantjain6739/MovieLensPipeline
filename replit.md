@@ -14,6 +14,8 @@ The system is designed as an educational example of modern data processing techn
 - Generated comprehensive analytics including top movies per genre, user segmentation, and collaborative filtering (RMSE: 0.9197)
 - Created performance comparison reports showing Pandas vs PySpark trade-offs for small datasets
 - Added interactive Streamlit dashboard (app.py) with 5 pages: Overview, Dataset Explorer, Analytics Results, Performance Comparison, and User Insights
+- Fixed Plotly visualization errors (update_xaxis → update_xaxes)
+- Created comprehensive README.md with localhost setup instructions and troubleshooting
 - All data processing, analytics, reporting, and visualization features are functional and verified
 
 ## User Preferences
