@@ -1,0 +1,11 @@
+{
+  "total_ratings": 100000,
+  "total_users": 943,
+  "total_movies": 1682,
+  "avg_rating": 3.52986,
+  "median_rating": 4.0,
+  "rating_std": 1.125673599144316,
+  "ratings_per_user": 106.04453870625663,
+  "ratings_per_movie": 59.45303210463734,
+  "sparsity": 0.9369533063577546
+}

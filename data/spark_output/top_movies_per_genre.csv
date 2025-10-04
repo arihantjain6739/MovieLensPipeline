@@ -1,0 +1,181 @@
+item_id,title,avg_rating,num_ratings,genre
+50,Star Wars (1977),4.3584905660377355,583,Action
+127,"Godfather, The (1972)",4.283292978208232,413,Action
+174,Raiders of the Lost Ark (1981),4.252380952380952,420,Action
+313,Titanic (1997),4.2457142857142856,350,Action
+172,"Empire Strikes Back, The (1980)",4.204359673024523,367,Action
+515,"Boot, Das (1981)",4.203980099502488,201,Action
+187,"Godfather: Part II, The (1974)",4.186602870813397,209,Action
+498,"African Queen, The (1951)",4.184210526315789,152,Action
+173,"Princess Bride, The (1987)",4.172839506172839,324,Action
+22,Braveheart (1995),4.151515151515151,297,Action
+50,Star Wars (1977),4.3584905660377355,583,Adventure
+174,Raiders of the Lost Ark (1981),4.252380952380952,420,Adventure
+511,Lawrence of Arabia (1962),4.23121387283237,173,Adventure
+172,"Empire Strikes Back, The (1980)",4.204359673024523,367,Adventure
+498,"African Queen, The (1951)",4.184210526315789,152,Adventure
+173,"Princess Bride, The (1987)",4.172839506172839,324,Adventure
+520,"Great Escape, The (1963)",4.104838709677419,124,Adventure
+519,"Treasure of the Sierra Madre, The (1948)",4.1,80,Adventure
+132,"Wizard of Oz, The (1939)",4.0772357723577235,246,Adventure
+530,"Man Who Would Be King, The (1975)",4.025,80,Adventure
+408,"Close Shave, A (1995)",4.491071428571429,112,Animation
+169,"Wrong Trousers, The (1993)",4.466101694915254,118,Animation
+114,Wallace & Gromit: The Best of Aardman Animation (1996),4.447761194029851,67,Animation
+189,"Grand Day Out, A (1992)",4.106060606060606,66,Animation
+1,Toy Story (1995),3.8783185840707963,452,Animation
+95,Aladdin (1992),3.8127853881278537,219,Animation
+969,Winnie the Pooh and the Blustery Day (1968),3.8,75,Animation
+588,Beauty and the Beast (1991),3.792079207920792,202,Animation
+71,"Lion King, The (1994)",3.7818181818181817,220,Animation
+432,Fantasia (1940),3.7701149425287355,174,Animation
+132,"Wizard of Oz, The (1939)",4.0772357723577235,246,Children
+8,Babe (1995),3.9954337899543377,219,Children
+500,Fly Away Home (1996),3.903225806451613,31,Children
+1,Toy Story (1995),3.8783185840707963,452,Children
+423,E.T. the Extra-Terrestrial (1982),3.8333333333333335,300,Children
+95,Aladdin (1992),3.8127853881278537,219,Children
+969,Winnie the Pooh and the Blustery Day (1968),3.8,75,Children
+588,Beauty and the Beast (1991),3.792079207920792,202,Children
+71,"Lion King, The (1994)",3.7818181818181817,220,Children
+432,Fantasia (1940),3.7701149425287355,174,Children
+408,"Close Shave, A (1995)",4.491071428571429,112,Comedy
+169,"Wrong Trousers, The (1993)",4.466101694915254,118,Comedy
+480,North by Northwest (1959),4.284916201117318,179,Comedy
+251,Shall We Dance? (1996),4.260869565217392,46,Comedy
+316,As Good As It Gets (1997),4.196428571428571,112,Comedy
+170,Cinema Paradiso (1988),4.1735537190082646,121,Comedy
+173,"Princess Bride, The (1987)",4.172839506172839,324,Comedy
+1007,Waiting for Guffman (1996),4.127659574468085,47,Comedy
+478,"Philadelphia Story, The (1940)",4.115384615384615,104,Comedy
+189,"Grand Day Out, A (1992)",4.106060606060606,66,Comedy
+12,"Usual Suspects, The (1995)",4.385767790262173,267,Crime
+127,"Godfather, The (1972)",4.283292978208232,413,Crime
+187,"Godfather: Part II, The (1974)",4.186602870813397,209,Crime
+302,L.A. Confidential (1997),4.161616161616162,297,Crime
+100,Fargo (1996),4.155511811023622,508,Crime
+611,Laura (1944),4.1,40,Crime
+1194,Once Were Warriors (1994),4.064516129032258,31,Crime
+56,Pulp Fiction (1994),4.060913705583756,394,Crime
+194,"Sting, The (1973)",4.058091286307054,241,Crime
+656,M (1931),4.0,44,Crime
+48,Hoop Dreams (1994),4.094017094017094,117,Documentary
+320,Paradise Lost: The Child Murders at Robin Hood Hills (1996),4.05,20,Documentary
+1142,When We Were Kings (1996),4.045454545454546,44,Documentary
+701,"Wonderful, Horrible Life of Leni Riefenstahl, The (1993)",4.0,10,Documentary
+811,Thirty-Two Short Films About Glenn Gould (1993),3.9444444444444446,18,Documentary
+813,"Celluloid Closet, The (1995)",3.892857142857143,56,Documentary
+1084,Anne Frank Remembered (1995),3.857142857142857,21,Documentary
+645,Paris Is Burning (1990),3.814814814814815,27,Documentary
+32,Crumb (1994),3.7901234567901234,81,Documentary
+644,"Thin Blue Line, The (1988)",3.7714285714285714,35,Documentary
+318,Schindler's List (1993),4.466442953020135,298,Drama
+483,Casablanca (1942),4.45679012345679,243,Drama
+64,"Shawshank Redemption, The (1994)",4.445229681978798,283,Drama
+178,12 Angry Men (1957),4.344,125,Drama
+134,Citizen Kane (1941),4.292929292929293,198,Drama
+963,Some Folks Call It a Sling Blade (1993),4.2926829268292686,41,Drama
+427,To Kill a Mockingbird (1962),4.292237442922374,219,Drama
+357,One Flew Over the Cuckoo's Nest (1975),4.291666666666667,264,Drama
+98,"Silence of the Lambs, The (1991)",4.28974358974359,390,Drama
+127,"Godfather, The (1972)",4.283292978208232,413,Drama
+423,E.T. the Extra-Terrestrial (1982),3.8333333333333335,300,Fantasy
+558,Heavenly Creatures (1994),3.6714285714285713,70,Fantasy
+141,"20,000 Leagues Under the Sea (1954)",3.5,72,Fantasy
+755,Jumanji (1995),3.3125,96,Fantasy
+72,"Mask, The (1994)",3.193798449612403,129,Fantasy
+472,Dragonheart (1996),3.0822784810126582,158,Fantasy
+1615,Warriors of Virtue (1997),3.0,10,Fantasy
+308,FairyTale: A True Story (1997),2.966666666666667,30,Fantasy
+1133,Escape to Witch Mountain (1975),2.966666666666667,30,Fantasy
+411,"Nutty Professor, The (1996)",2.914110429447853,163,Fantasy
+657,"Manchurian Candidate, The (1962)",4.259541984732825,131,Film-Noir
+484,"Maltese Falcon, The (1941)",4.2101449275362315,138,Film-Noir
+488,Sunset Blvd. (1950),4.2,65,Film-Noir
+302,L.A. Confidential (1997),4.161616161616162,297,Film-Noir
+89,Blade Runner (1982),4.138181818181818,275,Film-Noir
+654,Chinatown (1974),4.136054421768708,147,Film-Noir
+489,Notorious (1946),4.115384615384615,52,Film-Noir
+611,Laura (1944),4.1,40,Film-Noir
+525,"Big Sleep, The (1946)",4.027397260273973,73,Film-Noir
+656,M (1931),4.0,44,Film-Noir
+185,Psycho (1960),4.100418410041841,239,Horror
+183,Alien (1979),4.034364261168385,291,Horror
+208,Young Frankenstein (1974),3.945,200,Horror
+853,Braindead (1992),3.857142857142857,14,Horror
+200,"Shining, The (1980)",3.825242718446602,206,Horror
+443,"Birds, The (1963)",3.808641975308642,162,Horror
+234,Jaws (1975),3.775,280,Horror
+671,Bride of Frankenstein (1935),3.608695652173913,46,Horror
+675,"Nosferatu (Nosferatu, eine Symphonie des Grauens) (1922)",3.5555555555555554,54,Horror
+436,"American Werewolf in London, An (1981)",3.5353535353535355,99,Horror
+132,"Wizard of Oz, The (1939)",4.0772357723577235,246,Musical
+1203,Top Hat (1935),4.0476190476190474,21,Musical
+705,Singin' in the Rain (1952),3.9927007299270074,137,Musical
+209,This Is Spinal Tap (1984),3.905759162303665,191,Musical
+835,"Gay Divorcee, The (1934)",3.8666666666666667,15,Musical
+186,"Blues Brothers, The (1980)",3.8366533864541834,251,Musical
+485,My Fair Lady (1964),3.816,125,Musical
+95,Aladdin (1992),3.8127853881278537,219,Musical
+588,Beauty and the Beast (1991),3.792079207920792,202,Musical
+71,"Lion King, The (1994)",3.7818181818181817,220,Musical
+603,Rear Window (1954),4.3875598086124405,209,Mystery
+513,"Third Man, The (1949)",4.333333333333333,72,Mystery
+479,Vertigo (1958),4.251396648044692,179,Mystery
+484,"Maltese Falcon, The (1941)",4.2101449275362315,138,Mystery
+191,Amadeus (1984),4.163043478260869,276,Mystery
+302,L.A. Confidential (1997),4.161616161616162,297,Mystery
+493,"Thin Man, The (1934)",4.15,60,Mystery
+654,Chinatown (1974),4.136054421768708,147,Mystery
+611,Laura (1944),4.1,40,Mystery
+659,Arsenic and Old Lace (1944),4.078260869565217,115,Mystery
+483,Casablanca (1942),4.45679012345679,243,Romance
+50,Star Wars (1977),4.3584905660377355,583,Romance
+313,Titanic (1997),4.2457142857142856,350,Romance
+172,"Empire Strikes Back, The (1980)",4.204359673024523,367,Romance
+966,"Affair to Remember, An (1957)",4.1923076923076925,26,Romance
+498,"African Queen, The (1951)",4.184210526315789,152,Romance
+170,Cinema Paradiso (1988),4.1735537190082646,121,Romance
+173,"Princess Bride, The (1987)",4.172839506172839,324,Romance
+478,"Philadelphia Story, The (1940)",4.115384615384615,104,Romance
+489,Notorious (1946),4.115384615384615,52,Romance
+50,Star Wars (1977),4.3584905660377355,583,Sci-Fi
+474,Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb (1963),4.252577319587629,194,Sci-Fi
+172,"Empire Strikes Back, The (1980)",4.204359673024523,367,Sci-Fi
+89,Blade Runner (1982),4.138181818181818,275,Sci-Fi
+183,Alien (1979),4.034364261168385,291,Sci-Fi
+181,Return of the Jedi (1983),4.007889546351085,507,Sci-Fi
+96,Terminator 2: Judgment Day (1991),4.0067796610169495,295,Sci-Fi
+135,2001: A Space Odyssey (1968),3.969111969111969,259,Sci-Fi
+176,Aliens (1986),3.9471830985915495,284,Sci-Fi
+429,"Day the Earth Stood Still, The (1951)",3.9381443298969074,97,Sci-Fi
+408,"Close Shave, A (1995)",4.491071428571429,112,Thriller
+603,Rear Window (1954),4.3875598086124405,209,Thriller
+12,"Usual Suspects, The (1995)",4.385767790262173,267,Thriller
+513,"Third Man, The (1949)",4.333333333333333,72,Thriller
+963,Some Folks Call It a Sling Blade (1993),4.2926829268292686,41,Thriller
+98,"Silence of the Lambs, The (1991)",4.28974358974359,390,Thriller
+480,North by Northwest (1959),4.284916201117318,179,Thriller
+657,"Manchurian Candidate, The (1962)",4.259541984732825,131,Thriller
+479,Vertigo (1958),4.251396648044692,179,Thriller
+223,Sling Blade (1996),4.198529411764706,136,Thriller
+318,Schindler's List (1993),4.466442953020135,298,War
+483,Casablanca (1942),4.45679012345679,243,War
+50,Star Wars (1977),4.3584905660377355,583,War
+474,Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb (1963),4.252577319587629,194,War
+511,Lawrence of Arabia (1962),4.23121387283237,173,War
+641,Paths of Glory (1957),4.212121212121212,33,War
+172,"Empire Strikes Back, The (1980)",4.204359673024523,367,War
+515,"Boot, Das (1981)",4.203980099502488,201,War
+498,"African Queen, The (1951)",4.184210526315789,152,War
+199,"Bridge on the River Kwai, The (1957)",4.175757575757576,165,War
+661,High Noon (1952),4.1022727272727275,88,Western
+589,"Wild Bunch, The (1969)",4.023255813953488,43,Western
+435,Butch Cassidy and the Sundance Kid (1969),3.949074074074074,216,Western
+510,"Magnificent Seven, The (1954)",3.9421487603305785,121,Western
+646,Once Upon a Time in the West (1969),3.8684210526315788,38,Western
+203,Unforgiven (1992),3.868131868131868,182,Western
+177,"Good, The Bad and The Ugly, The (1966)",3.8613138686131387,137,Western
+922,Dead Man (1995),3.823529411764706,34,Western
+97,Dances with Wolves (1990),3.79296875,256,Western
+470,Tombstone (1993),3.6666666666666665,108,Western

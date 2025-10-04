@@ -1,0 +1,10 @@
+frequency_segment,rating_tendency,user_count
+high,generous,22
+high,harsh,22
+high,neutral,186
+low,generous,74
+low,harsh,37
+low,neutral,264
+medium,generous,64
+medium,harsh,25
+medium,neutral,249
