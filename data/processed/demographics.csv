@@ -1,0 +1,201 @@
+user_id,income_level,education_level
+1,Low,High School
+2,Low,High School
+3,High,High School
+4,Medium,Bachelor
+5,Medium,Bachelor
+6,Medium,PhD
+7,Low,PhD
+8,Low,PhD
+9,Very High,Bachelor
+10,Low,PhD
+11,Low,High School
+12,Low,Bachelor
+13,Medium,PhD
+14,Medium,High School
+15,Low,PhD
+16,Medium,Master
+17,Very High,PhD
+18,Medium,Master
+19,Very High,PhD
+20,High,PhD
+21,Low,Bachelor
+22,Medium,Bachelor
+23,Very High,Master
+24,High,Bachelor
+25,High,High School
+26,Medium,High School
+27,Medium,Master
+28,High,High School
+29,Low,High School
+30,Low,PhD
+31,Very High,Bachelor
+32,Low,High School
+33,High,High School
+34,High,Bachelor
+35,High,High School
+36,Low,High School
+37,Very High,Bachelor
+38,Low,PhD
+39,Very High,High School
+40,Low,Bachelor
+41,High,High School
+42,High,High School
+43,Medium,PhD
+44,Low,Master
+45,Low,Master
+46,Medium,Bachelor
+47,High,Master
+48,Low,Bachelor
+49,Medium,Master
+50,Low,PhD
+51,Very High,Bachelor
+52,High,Master
+53,Very High,PhD
+54,High,Master
+55,Medium,High School
+56,High,High School
+57,High,PhD
+58,Medium,High School
+59,High,High School
+60,Low,Bachelor
+61,Medium,Master
+62,Medium,Bachelor
+63,Medium,Master
+64,Very High,High School
+65,Very High,Bachelor
+66,High,Master
+67,Medium,Master
+68,High,Bachelor
+69,Low,PhD
+70,Medium,Master
+71,Low,High School
+72,High,Master
+73,Very High,High School
+74,High,Bachelor
+75,Low,Master
+76,Medium,High School
+77,High,High School
+78,Medium,Bachelor
+79,Very High,Master
+80,Very High,Master
+81,Very High,Bachelor
+82,Medium,Master
+83,High,Bachelor
+84,Medium,Master
+85,Medium,PhD
+86,High,Master
+87,Very High,High School
+88,Very High,High School
+89,High,PhD
+90,Medium,Master
+91,Medium,High School
+92,Very High,High School
+93,Low,Master
+94,Low,Bachelor
+95,Low,Master
+96,Medium,Bachelor
+97,Medium,PhD
+98,Very High,PhD
+99,Low,High School
+100,Very High,High School
+101,Very High,High School
+102,Very High,Bachelor
+103,High,High School
+104,Low,Master
+105,Low,Bachelor
+106,High,PhD
+107,High,Bachelor
+108,Low,High School
+109,High,Master
+110,Very High,Master
+111,Medium,High School
+112,Very High,Master
+113,Low,Bachelor
+114,High,Bachelor
+115,Medium,High School
+116,Low,Master
+117,High,PhD
+118,Medium,Bachelor
+119,Medium,Bachelor
+120,High,Bachelor
+121,Medium,Bachelor
+122,Low,PhD
+123,High,High School
+124,Very High,Bachelor
+125,Low,Master
+126,Low,PhD
+127,High,Bachelor
+128,High,Master
+129,Medium,Bachelor
+130,Low,High School
+131,Medium,PhD
+132,Low,High School
+133,Low,PhD
+134,Very High,Bachelor
+135,Low,Bachelor
+136,Medium,PhD
+137,Medium,Master
+138,Very High,Master
+139,Medium,Bachelor
+140,High,Bachelor
+141,Very High,High School
+142,Medium,Bachelor
+143,Medium,PhD
+144,High,Master
+145,Very High,Master
+146,High,High School
+147,Very High,Master
+148,Very High,Master
+149,Low,PhD
+150,Medium,Master
+151,Medium,High School
+152,Low,High School
+153,High,Master
+154,Low,Bachelor
+155,Medium,Master
+156,Medium,High School
+157,Low,High School
+158,Low,PhD
+159,Low,Master
+160,Medium,Master
+161,Low,PhD
+162,Low,High School
+163,High,PhD
+164,Low,Bachelor
+165,Medium,Master
+166,High,High School
+167,Very High,PhD
+168,Medium,High School
+169,Medium,Bachelor
+170,Very High,Master
+171,Medium,PhD
+172,Very High,High School
+173,Very High,Master
+174,Medium,Master
+175,Low,High School
+176,Low,Master
+177,Very High,Master
+178,High,PhD
+179,Very High,Master
+180,Very High,PhD
+181,Very High,Master
+182,Low,Bachelor
+183,Low,Bachelor
+184,Low,PhD
+185,Very High,PhD
+186,High,Bachelor
+187,Low,Master
+188,Medium,PhD
+189,Medium,High School
+190,Medium,Master
+191,Very High,Master
+192,Medium,Bachelor
+193,Very High,PhD
+194,Medium,Master
+195,High,PhD
+196,Very High,PhD
+197,Medium,PhD
+198,Low,Bachelor
+199,Very High,PhD
+200,Low,Bachelor
