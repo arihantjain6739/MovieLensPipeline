@@ -16,19 +16,28 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Pipeline"
+args = "Dashboard"
 
 [[workflows.workflow]]
-name = "Pipeline"
+name = "Dashboard"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python main.py"
+args = "streamlit run app.py --server.port 5000 --server.address 0.0.0.0 --server.headless true"
+waitForPort = 5000
 
 [workflows.workflow.metadata]
-outputType = "console"
+outputType = "webview"
 
 [[ports]]
 localPort = 4040
 externalPort = 3000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 33993
+externalPort = 3001
