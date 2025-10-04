@@ -13,7 +13,8 @@ The system is designed as an educational example of modern data processing techn
 - Successfully tested end-to-end pipeline with 100,000 ratings from 943 users on 1,682 movies
 - Generated comprehensive analytics including top movies per genre, user segmentation, and collaborative filtering (RMSE: 0.9197)
 - Created performance comparison reports showing Pandas vs PySpark trade-offs for small datasets
-- All data processing, analytics, and reporting features are functional and verified
+- Added interactive Streamlit dashboard (app.py) with 5 pages: Overview, Dataset Explorer, Analytics Results, Performance Comparison, and User Insights
+- All data processing, analytics, reporting, and visualization features are functional and verified
 
 ## User Preferences
 
