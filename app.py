@@ -206,7 +206,7 @@ def show_dataset_explorer(data):
             title='Number of Movies per Genre',
             labels={'Count': 'Number of Movies', 'Genre': 'Genre'}
         )
-        fig.update_xaxis(tickangle=-45)
+        fig.update_xaxes(tickangle=-45)
         st.plotly_chart(fig, use_container_width=True)
         
         st.markdown("#### Sample Movies Data")
@@ -235,7 +235,7 @@ def show_analytics_results(data):
                 color='avg_rating',
                 color_continuous_scale='RdYlGn'
             )
-            fig.update_xaxis(tickangle=-45)
+            fig.update_xaxes(tickangle=-45)
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
