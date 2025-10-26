@@ -1,69 +1,120 @@
 """
-Data Processing Module with Pandas ETL and SQLite Integration
+Data Processing Module with Pandas ETL and HDFS Integration
 
 This module handles data processing operations including ETL transformations,
-aggregations, and SQLite database operations for the MovieLens dataset.
+aggregations, and HDFS data operations for the MovieLens dataset.
 """
 
 import pandas as pd
-import sqlite3
 from pathlib import Path
 import time
+import subprocess
+import tempfile
+import os
 
 
 class DataProcessor:
-    """Handles pandas-based ETL and SQLite operations."""
+    """Handles pandas-based ETL with HDFS support."""
     
-    def __init__(self, processed_dir='data/processed', db_path='data/movielens.db'):
+    def __init__(self, processed_dir='data/processed', checkpoint_dir='data/checkpoints',
+                 use_hdfs=False, hdfs_url='hdfs://localhost:9000'):
         """
         Initialize the processor.
         
         Args:
             processed_dir: Directory containing processed CSV files
-            db_path: Path to SQLite database
+            checkpoint_dir: Directory for ETL checkpoints
+            use_hdfs: Whether to use HDFS for storage
+            hdfs_url: HDFS namenode URL
         """
-        self.processed_dir = Path(processed_dir)
-        self.db_path = Path(db_path)
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.use_hdfs = use_hdfs
+        self.hdfs_url = hdfs_url
+        
+        if use_hdfs:
+            self.processed_dir = '/movielens/data'
+            self.checkpoint_dir = '/movielens/checkpoints'
+            print(f"DataProcessor using HDFS: {hdfs_url}")
+        else:
+            self.processed_dir = Path(processed_dir)
+            self.checkpoint_dir = Path(checkpoint_dir)
+            self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
+            print(f"DataProcessor using local filesystem")
     
     def load_data(self):
         """
-        Load processed data from CSV files.
+        Load processed data from CSV files (HDFS or local).
         
         Returns:
             Tuple of (ratings_df, users_df, items_df)
         """
-        print("Loading processed data from CSV files...")
+        print("Loading processed data from storage...")
         
-        ratings_df = pd.read_csv(self.processed_dir / 'ratings.csv')
-        users_df = pd.read_csv(self.processed_dir / 'users.csv')
-        items_df = pd.read_csv(self.processed_dir / 'items.csv')
+        if self.use_hdfs:
+            # Load from HDFS
+            ratings_df = self._read_from_hdfs('ratings.csv')
+            users_df = self._read_from_hdfs('users.csv')
+            items_df = self._read_from_hdfs('items.csv')
+        else:
+            # Load from local filesystem
+            ratings_df = pd.read_csv(self.processed_dir / 'ratings.csv')
+            users_df = pd.read_csv(self.processed_dir / 'users.csv')
+            items_df = pd.read_csv(self.processed_dir / 'items.csv')
         
         print(f"Loaded {len(ratings_df)} ratings, {len(users_df)} users, {len(items_df)} items")
         return ratings_df, users_df, items_df
     
-    def create_sqlite_db(self, users_df):
+    def _read_from_hdfs(self, filename):
         """
-        Create SQLite database and import users table.
+        Read CSV file from HDFS.
         
         Args:
-            users_df: Users DataFrame to import
+            filename: Name of the file to read
+            
+        Returns:
+            pandas DataFrame
         """
-        print(f"\nCreating SQLite database at {self.db_path}...")
+        hdfs_path = f"{self.processed_dir}/{filename}"
+        print(f"Reading from HDFS: {hdfs_path}")
         
-        conn = sqlite3.connect(self.db_path)
+        try:
+            result = subprocess.run([
+                'docker', 'exec', 'namenode',
+                'hdfs', 'dfs', '-cat', hdfs_path
+            ], capture_output=True, check=True)
+            
+            from io import StringIO
+            return pd.read_csv(StringIO(result.stdout.decode('utf-8')))
+        except subprocess.CalledProcessError as e:
+            print(f"Error reading from HDFS: {e.stderr.decode()}")
+            raise
+    
+    def _write_to_hdfs(self, df, filename):
+        """
+        Write DataFrame to HDFS.
         
-        # Import users table
-        users_df.to_sql('users', conn, if_exists='replace', index=False)
-        print(f"Imported {len(users_df)} users into SQLite database")
+        Args:
+            df: pandas DataFrame to write
+            filename: Name of the file
+        """
+        hdfs_path = f"{self.checkpoint_dir}/{filename}"
+        print(f"Writing to HDFS: {hdfs_path}")
         
-        # Create index for better query performance
-        cursor = conn.cursor()
-        cursor.execute('CREATE INDEX IF NOT EXISTS idx_user_id ON users(user_id)')
-        conn.commit()
+        # Write to temporary file first
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as tmp:
+            df.to_csv(tmp.name, index=False)
+            tmp_path = tmp.name
         
-        conn.close()
-        print("SQLite database created successfully")
+        try:
+            subprocess.run([
+                'docker', 'exec', '-i', 'namenode',
+                'hdfs', 'dfs', '-put', '-f', '-', hdfs_path
+            ], stdin=open(tmp_path, 'rb'), check=True, capture_output=True)
+            print(f"✓ Saved to HDFS: {hdfs_path}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error writing to HDFS: {e.stderr.decode()}")
+            raise
+        finally:
+            os.unlink(tmp_path)
     
     def filter_active_users(self, ratings_df, min_ratings=50):
         """
@@ -198,81 +249,25 @@ class DataProcessor:
         print(f"Analyzed {len(genre_df)} genres")
         return genre_df
     
-    def import_external_demographics(self):
-        """
-        Import external demographics CSV into SQLite for integration demo.
-        
-        Returns:
-            DataFrame with demographics data
-        """
-        print("\nImporting external demographics data...")
-        
-        demographics_path = self.processed_dir / 'demographics.csv'
-        
-        if not demographics_path.exists():
-            print(f"Demographics file not found at {demographics_path}")
-            return None
-        
-        demographics_df = pd.read_csv(demographics_path)
-        
-        conn = sqlite3.connect(self.db_path)
-        demographics_df.to_sql('demographics', conn, if_exists='replace', index=False)
-        conn.commit()
-        conn.close()
-        
-        print(f"Imported {len(demographics_df)} demographic records into SQLite")
-        return demographics_df
-    
-    def sql_join_demo(self):
-        """
-        Demonstrate SQL joins between ratings and demographics in SQLite.
-        
-        Returns:
-            DataFrame with joined results
-        """
-        print("\nPerforming SQL join demo (users + demographics)...")
-        
-        conn = sqlite3.connect(self.db_path)
-        
-        # Check if demographics table exists
-        cursor = conn.cursor()
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='demographics'")
-        if not cursor.fetchone():
-            print("Demographics table not found in database")
-            conn.close()
-            return None
-        
-        # Perform SQL join
-        query = """
-        SELECT u.user_id, u.age, u.gender, u.occupation, 
-               d.income_level, d.education_level
-        FROM users u
-        LEFT JOIN demographics d ON u.user_id = d.user_id
-        LIMIT 10
-        """
-        
-        result_df = pd.read_sql_query(query, conn)
-        conn.close()
-        
-        print(f"SQL join completed, retrieved {len(result_df)} records")
-        return result_df
-    
     def create_checkpoint(self, data_dict, checkpoint_name):
         """
-        Create checkpoint to simulate fault tolerance.
+        Create checkpoint for fault tolerance (stored in HDFS or local).
         
         Args:
             data_dict: Dictionary of DataFrames to checkpoint
             checkpoint_name: Name of the checkpoint
         """
-        checkpoint_dir = Path('data/checkpoints')
-        checkpoint_dir.mkdir(parents=True, exist_ok=True)
-        
         print(f"\nCreating checkpoint: {checkpoint_name}...")
         
         for name, df in data_dict.items():
-            filepath = checkpoint_dir / f"{checkpoint_name}_{name}.csv"
-            df.to_csv(filepath, index=False)
+            filename = f"{checkpoint_name}_{name}.csv"
+            
+            if self.use_hdfs:
+                self._write_to_hdfs(df, filename)
+            else:
+                filepath = self.checkpoint_dir / filename
+                df.to_csv(filepath, index=False)
+                print(f"✓ Saved checkpoint to {filepath}")
         
         print(f"Checkpoint '{checkpoint_name}' created successfully")
     
@@ -285,15 +280,16 @@ class DataProcessor:
         """
         print("=" * 60)
         print("Starting Pandas ETL Pipeline")
+        if self.use_hdfs:
+            print(f"Storage Backend: HDFS ({self.hdfs_url})")
+        else:
+            print("Storage Backend: Local Filesystem")
         print("=" * 60)
         
         start_time = time.time()
         
-        # Load data
+        # Load data from storage
         ratings_df, users_df, items_df = self.load_data()
-        
-        # Create SQLite database
-        self.create_sqlite_db(users_df)
         
         # ETL operations
         active_ratings, active_user_ids = self.filter_active_users(ratings_df)

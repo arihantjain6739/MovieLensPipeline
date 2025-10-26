@@ -4,24 +4,103 @@ Reporting Module
 This module handles generation and export of summary reports for the MovieLens
 analytics pipeline, including top genres, active users, and comparison statistics.
 """
-
 import pandas as pd
 from pathlib import Path
 import json
 
-
 class ReportGenerator:
-    """Handles report generation and export operations."""
-    
-    def __init__(self, output_dir='data/reports'):
+    """Handles report generation and export operations with HDFS support."""
+    def __init__(self, output_dir='data/reports', use_hdfs=False, hdfs_url='hdfs://localhost:9000'):
         """
         Initialize the report generator.
         
         Args:
-            output_dir: Directory for report output files
+            output_dir: Directory for report output files (local or HDFS path)
+            use_hdfs: Whether to use HDFS for storage
+            hdfs_url: HDFS namenode URL
         """
-        self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.use_hdfs = use_hdfs
+        self.hdfs_url = hdfs_url
+        
+        if use_hdfs:
+            # HDFS mode
+            from pyspark.sql import SparkSession
+            self.output_dir = f"{hdfs_url}/movielens/reports"
+            self.spark = SparkSession.builder \
+                .appName("MovieLensReporting") \
+                .config("spark.hadoop.fs.defaultFS", hdfs_url) \
+                .getOrCreate()
+            print(f"ReportGenerator initialized with HDFS: {self.output_dir}")
+        else:
+            # Local filesystem mode
+            self.output_dir = Path(output_dir)
+            self.output_dir.mkdir(parents=True, exist_ok=True)
+            self.spark = None
+            print(f"ReportGenerator initialized with local storage: {self.output_dir}")
+    
+    def _save_dataframe(self, df, filename):
+        """
+        Save DataFrame to local filesystem or HDFS.
+        
+        Args:
+            df: Pandas DataFrame to save
+            filename: Output filename
+            
+        Returns:
+            Path to saved file
+        """
+        if self.use_hdfs:
+            # Convert pandas DataFrame to Spark DataFrame
+            spark_df = self.spark.createDataFrame(df)
+            hdfs_path = f"{self.output_dir}/{filename}"
+            
+            # Write to HDFS (coalesce to single file)
+            spark_df.coalesce(1).write.mode('overwrite').option('header', 'true').csv(hdfs_path)
+            print(f"Report saved to HDFS: {hdfs_path}")
+            return hdfs_path
+        else:
+            # Save to local filesystem
+            output_path = self.output_dir / filename
+            df.to_csv(output_path, index=False)
+            print(f"Report saved to {output_path}")
+            return output_path
+    
+    def _save_json(self, data, filename):
+        """
+        Save JSON data to local filesystem or HDFS.
+        
+        Args:
+            data: Dictionary to save as JSON
+            filename: Output filename
+            
+        Returns:
+            Path to saved file
+        """
+        if self.use_hdfs:
+            import subprocess
+            import tempfile
+            
+            # Write to temporary local file first
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp:
+                json.dump(data, tmp, indent=2)
+                tmp_path = tmp.name
+            
+            # Copy to HDFS using docker exec
+            hdfs_path = f"/movielens/reports/{filename}"
+            subprocess.run([
+                'docker', 'exec', '-i', 'namenode', 
+                'hdfs', 'dfs', '-put', '-f', '-', hdfs_path
+            ], stdin=open(tmp_path, 'rb'), check=True)
+            
+            print(f"JSON saved to HDFS: hdfs://localhost:9000{hdfs_path}")
+            return f"{self.hdfs_url}{hdfs_path}"
+        else:
+            # Save to local filesystem
+            output_path = self.output_dir / filename
+            with open(output_path, 'w') as f:
+                json.dump(data, f, indent=2)
+            print(f"JSON saved to {output_path}")
+            return output_path
     
     def generate_top_genres_report(self, genre_popularity_df):
         """
@@ -38,11 +117,9 @@ class ReportGenerator:
         # Sort by number of ratings (descending)
         top_genres = genre_popularity_df.sort_values('num_ratings', ascending=False)
         
-        # Export to CSV
-        output_path = self.output_dir / 'top_genres.csv'
-        top_genres.to_csv(output_path, index=False)
+        # Export to CSV (local or HDFS)
+        output_path = self._save_dataframe(top_genres, 'top_genres.csv')
         
-        print(f"Top genres report saved to {output_path}")
         print("\nTop 5 Genres by Number of Ratings:")
         print(top_genres.head().to_string(index=False))
         
@@ -78,11 +155,9 @@ class ReportGenerator:
         # Sort by number of ratings
         active_users = active_users.sort_values('num_ratings', ascending=False)
         
-        # Export to CSV
-        output_path = self.output_dir / 'active_users.csv'
-        active_users.to_csv(output_path, index=False)
+        # Export to CSV (local or HDFS)
+        output_path = self._save_dataframe(active_users, 'active_users.csv')
         
-        print(f"Active users report saved to {output_path}")
         print(f"\nTop 10 Most Active Users (min {min_ratings} ratings):")
         print(active_users.head(10).to_string(index=False))
         
@@ -107,11 +182,9 @@ class ReportGenerator:
         # Sort by average rating
         top_movies = popular_movies.sort_values('avg_rating', ascending=False).head(top_n)
         
-        # Export to CSV
-        output_path = self.output_dir / 'top_movies.csv'
-        top_movies.to_csv(output_path, index=False)
+        # Export to CSV (local or HDFS)
+        output_path = self._save_dataframe(top_movies, 'top_movies.csv')
         
-        print(f"Movie recommendations report saved to {output_path}")
         print(f"\nTop 10 Recommended Movies:")
         print(top_movies.head(10).to_string(index=False))
         
@@ -138,11 +211,9 @@ class ReportGenerator:
         
         comparison_df = pd.DataFrame(comparison)
         
-        # Export to CSV
-        output_path = self.output_dir / 'performance_comparison.csv'
-        comparison_df.to_csv(output_path, index=False)
+        # Export to CSV (local or HDFS)
+        output_path = self._save_dataframe(comparison_df, 'performance_comparison.csv')
         
-        print(f"Performance comparison saved to {output_path}")
         print("\n" + "=" * 60)
         print("PERFORMANCE COMPARISON: Pandas vs. PySpark")
         print("=" * 60)
@@ -186,12 +257,8 @@ class ReportGenerator:
             'sparsity': 1 - (len(ratings_df) / (len(users_df) * len(items_df)))
         }
         
-        # Export to JSON
-        output_path = self.output_dir / 'summary_statistics.json'
-        with open(output_path, 'w') as f:
-            json.dump(summary, f, indent=2)
-        
-        print(f"Summary statistics saved to {output_path}")
+        # Export to JSON (local or HDFS)
+        output_path = self._save_json(summary, 'summary_statistics.json')
         
         print("\n" + "=" * 60)
         print("DATASET SUMMARY STATISTICS")
@@ -254,7 +321,10 @@ class ReportGenerator:
                 pandas_results['users'],
                 pandas_results['items']
             )
-            report_paths['summary'] = self.output_dir / 'summary_statistics.json'
+            if self.use_hdfs:
+                report_paths['summary'] = f"{self.output_dir}/summary_statistics.json"
+            else:
+                report_paths['summary'] = self.output_dir / 'summary_statistics.json'
         
         print("\n" + "=" * 60)
         print("All Reports Generated Successfully")

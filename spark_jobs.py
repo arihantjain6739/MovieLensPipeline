@@ -17,28 +17,45 @@ from pyspark.ml.evaluation import RegressionEvaluator
 
 
 class SparkAnalytics:
-    """Handles PySpark-based analytics operations."""
+    """Handles PySpark-based analytics operations with HDFS support."""
     
-    def __init__(self, processed_dir='data/processed', output_dir='data/spark_output'):
+    def __init__(self, processed_dir='data/processed', output_dir='data/spark_output',
+                 use_hdfs=False, hdfs_url='hdfs://localhost:9000'):
         """
         Initialize Spark analytics.
         
         Args:
             processed_dir: Directory containing processed CSV files
             output_dir: Directory for Spark output files
+            use_hdfs: Whether to use HDFS for storage
+            hdfs_url: HDFS namenode URL
         """
-        self.processed_dir = Path(processed_dir)
-        self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.use_hdfs = use_hdfs
+        self.hdfs_url = hdfs_url
+        
+        if use_hdfs:
+            self.processed_dir = f"{hdfs_url}/movielens/data"
+            self.output_dir = f"{hdfs_url}/movielens/output"
+        else:
+            self.processed_dir = Path(processed_dir)
+            self.output_dir = Path(output_dir)
+            self.output_dir.mkdir(parents=True, exist_ok=True)
         
         # Initialize Spark session
         print("Initializing Spark session...")
-        self.spark = SparkSession.builder \
+        spark_builder = SparkSession.builder \
             .appName("MovieLens Analytics") \
             .master("local[*]") \
             .config("spark.driver.memory", "2g") \
-            .config("spark.sql.shuffle.partitions", "4") \
-            .getOrCreate()
+            .config("spark.sql.shuffle.partitions", "4")
+        
+        # Configure HDFS if enabled
+        if use_hdfs:
+            spark_builder = spark_builder \
+                .config("spark.hadoop.fs.defaultFS", hdfs_url)
+            print(f"Spark configured for HDFS: {hdfs_url}")
+        
+        self.spark = spark_builder.getOrCreate()
         
         # Set log level to reduce verbosity
         self.spark.sparkContext.setLogLevel("WARN")
@@ -46,30 +63,41 @@ class SparkAnalytics:
     
     def load_data(self):
         """
-        Load data from CSV files into Spark DataFrames.
+        Load data from CSV files into Spark DataFrames (HDFS or local).
         
         Returns:
             Tuple of (ratings_df, users_df, items_df)
         """
         print("\nLoading data into Spark DataFrames...")
         
+        if self.use_hdfs:
+            # Load from HDFS
+            ratings_path = f"{self.processed_dir}/ratings.csv"
+            users_path = f"{self.processed_dir}/users.csv"
+            items_path = f"{self.processed_dir}/items.csv"
+        else:
+            # Load from local filesystem
+            ratings_path = str(self.processed_dir / 'ratings.csv')
+            users_path = str(self.processed_dir / 'users.csv')
+            items_path = str(self.processed_dir / 'items.csv')
+        
         # Load ratings
         ratings_df = self.spark.read.csv(
-            str(self.processed_dir / 'ratings.csv'),
+            ratings_path,
             header=True,
             inferSchema=True
         )
         
         # Load users
         users_df = self.spark.read.csv(
-            str(self.processed_dir / 'users.csv'),
+            users_path,
             header=True,
             inferSchema=True
         )
         
         # Load items
         items_df = self.spark.read.csv(
-            str(self.processed_dir / 'items.csv'),
+            items_path,
             header=True,
             inferSchema=True
         )
@@ -255,18 +283,30 @@ class SparkAnalytics:
     
     def save_results(self, df, filename):
         """
-        Save Spark DataFrame to CSV.
+        Save Spark DataFrame to CSV (HDFS or local).
         
         Args:
             df: Spark DataFrame to save
             filename: Output filename
         """
-        output_path = self.output_dir / filename
-        
-        # Convert to Pandas and save (for small datasets)
-        pandas_df = df.toPandas()
-        pandas_df.to_csv(output_path, index=False)
-        print(f"Saved {len(pandas_df)} records to {output_path}")
+        if self.use_hdfs:
+            # Save to HDFS directly using Spark
+            output_path = f"{self.output_dir}/{filename}"
+            
+            # Save to a temporary directory in HDFS
+            temp_path = f"{output_path}_temp"
+            df.coalesce(1).write.mode('overwrite').option('header', 'true').csv(temp_path)
+            
+            print(f"Saved to HDFS: {output_path}")
+            print(f"  (Spark output in: {temp_path})")
+        else:
+            # Save to local filesystem
+            output_path = self.output_dir / filename
+            
+            # Convert to Pandas and save (for small datasets)
+            pandas_df = df.toPandas()
+            pandas_df.to_csv(output_path, index=False)
+            print(f"Saved {len(pandas_df)} records to {output_path}")
     
     def run_spark_analytics(self):
         """
@@ -277,6 +317,10 @@ class SparkAnalytics:
         """
         print("=" * 60)
         print("Starting PySpark Analytics Jobs")
+        if self.use_hdfs:
+            print(f"Storage Backend: HDFS ({self.hdfs_url})")
+        else:
+            print("Storage Backend: Local Filesystem")
         print("=" * 60)
         
         start_time = time.time()

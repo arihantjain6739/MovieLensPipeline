@@ -2,8 +2,7 @@
 Data Ingestion Module for MovieLens 100k Dataset
 
 This module handles downloading, extracting, and loading the MovieLens 100k 
-dataset from grouplens.org into pandas DataFrames, then stores them as CSV files
-to simulate HDFS storage.
+dataset from grouplens.org into pandas DataFrames, then stores them in HDFS.
 """
 
 import os
@@ -12,29 +11,44 @@ import requests
 import pandas as pd
 from pathlib import Path
 import time
+import subprocess
+import tempfile
 
 
 class MovieLensIngester:
-    """Handles ingestion of MovieLens 100k dataset."""
+    """Handles ingestion of MovieLens 100k dataset with HDFS support."""
     
-    def __init__(self, data_dir='data', raw_dir='data/raw', processed_dir='data/processed'):
+    def __init__(self, data_dir='data', raw_dir='data/raw', processed_dir='data/processed', 
+                 use_hdfs=False, hdfs_url='hdfs://localhost:9000'):
         """
         Initialize the ingester with directory paths.
         
         Args:
             data_dir: Root data directory
             raw_dir: Directory for raw downloaded data
-            processed_dir: Directory for processed CSV files (simulating HDFS)
+            processed_dir: Directory for processed CSV files
+            use_hdfs: Whether to use HDFS for storage
+            hdfs_url: HDFS namenode URL
         """
         self.data_dir = Path(data_dir)
         self.raw_dir = Path(raw_dir)
-        self.processed_dir = Path(processed_dir)
+        self.use_hdfs = use_hdfs
+        self.hdfs_url = hdfs_url
+        
+        if use_hdfs:
+            # HDFS paths
+            self.processed_dir = '/movielens/data'
+            print(f"Using HDFS storage: {hdfs_url}{self.processed_dir}")
+        else:
+            # Local filesystem
+            self.processed_dir = Path(processed_dir)
+            self.processed_dir.mkdir(parents=True, exist_ok=True)
+            
         self.dataset_url = 'https://files.grouplens.org/datasets/movielens/ml-100k.zip'
         self.dataset_name = 'ml-100k'
         
-        # Create directories if they don't exist
+        # Create local directories if they don't exist
         self.raw_dir.mkdir(parents=True, exist_ok=True)
-        self.processed_dir.mkdir(parents=True, exist_ok=True)
     
     def download_dataset(self):
         """Download MovieLens 100k dataset from grouplens.org."""
@@ -143,16 +157,41 @@ class MovieLensIngester:
     
     def save_to_csv(self, df, filename):
         """
-        Save DataFrame to CSV file (simulating HDFS storage).
+        Save DataFrame to CSV file in local filesystem or HDFS.
         
         Args:
             df: pandas DataFrame to save
             filename: Name of the CSV file
         """
-        filepath = self.processed_dir / filename
-        print(f"Saving to {filepath}...")
-        df.to_csv(filepath, index=False)
-        print(f"Saved {len(df)} records to {filepath}")
+        if self.use_hdfs:
+            # Save to HDFS using docker exec
+            print(f"Saving to HDFS: {self.hdfs_url}{self.processed_dir}/{filename}...")
+            
+            # Write to temporary file first
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as tmp:
+                df.to_csv(tmp.name, index=False)
+                tmp_path = tmp.name
+            
+            # Upload to HDFS
+            hdfs_path = f"{self.processed_dir}/{filename}"
+            try:
+                subprocess.run([
+                    'docker', 'exec', '-i', 'namenode',
+                    'hdfs', 'dfs', '-put', '-f', '-', hdfs_path
+                ], stdin=open(tmp_path, 'rb'), check=True, capture_output=True)
+                print(f"✓ Saved {len(df)} records to HDFS: {hdfs_path}")
+            except subprocess.CalledProcessError as e:
+                print(f"Error uploading to HDFS: {e.stderr.decode()}")
+                raise
+            finally:
+                # Clean up temp file
+                os.unlink(tmp_path)
+        else:
+            # Save to local filesystem
+            filepath = self.processed_dir / filename
+            print(f"Saving to {filepath}...")
+            df.to_csv(filepath, index=False)
+            print(f"Saved {len(df)} records to {filepath}")
     
     def ingest_all(self):
         """
@@ -163,6 +202,10 @@ class MovieLensIngester:
         """
         print("=" * 60)
         print("Starting MovieLens 100k Data Ingestion")
+        if self.use_hdfs:
+            print(f"Storage Backend: HDFS ({self.hdfs_url})")
+        else:
+            print("Storage Backend: Local Filesystem")
         print("=" * 60)
         
         # Download and extract
@@ -174,8 +217,9 @@ class MovieLensIngester:
         users_df = self.load_users()
         items_df = self.load_items()
         
-        # Save to CSV (simulating HDFS storage)
-        print("\nStoring data in CSV format (simulating HDFS)...")
+        # Save to storage backend (HDFS or local)
+        storage_type = "HDFS" if self.use_hdfs else "CSV files"
+        print(f"\nStoring data in {storage_type}...")
         self.save_to_csv(ratings_df, 'ratings.csv')
         self.save_to_csv(users_df, 'users.csv')
         self.save_to_csv(items_df, 'items.csv')
